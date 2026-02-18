@@ -1,0 +1,175 @@
+<!-- reactive-demo.component.html -->
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-block">
+        <div class="logo-icon">&#9670;</div>
+        <span class="logo-text">Angular <strong>Forms</strong></span>
+      </div>
+      <nav class="header-nav">
+        <a routerLink="/template-demo" class="nav-link">Template-Driven</a>
+        <a routerLink="/reactive-demo" class="nav-link active">Reactive</a>
+        <a routerLink="/custom-form"   class="nav-link">Custom Form</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-label">Angular Reactive Form</div>
+    <h1 class="hero-title">User Registration</h1>
+    <p class="hero-sub">Reactive approach — model-driven, fine-grained validation.</p>
+  </section>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <!-- Success Card -->
+    <div class="success-card" *ngIf="submitted">
+      <div class="success-icon">&#10003;</div>
+      <div class="success-body">
+        <h3>Submission Successful!</h3>
+        <p>Welcome, <strong>{{ form.value.username }}</strong>! Your registration was received.</p>
+        <div class="summary-grid">
+          <div class="summary-item"><span class="s-label">Email</span><span class="s-val">{{ form.value.email }}</span></div>
+          <div class="summary-item"><span class="s-label">Role</span><span class="s-val">{{ form.value.role }}</span></div>
+          <div class="summary-item"><span class="s-label">Gender</span><span class="s-val">{{ form.value.gender }}</span></div>
+          <div class="summary-item"><span class="s-label">Status</span><span class="s-val">{{ form.value.status }}</span></div>
+          <div class="summary-item full"><span class="s-label">Comments</span><span class="s-val">{{ form.value.comments || '—' }}</span></div>
+        </div>
+        <button class="btn-reset" (click)="resetForm()">Register Another</button>
+      </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card" *ngIf="!submitted">
+
+      <!-- Reactive badge -->
+      <div class="reactive-badge">
+        <span class="badge-dot"></span>
+        FormBuilder &amp; Validators
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- ── Username ── -->
+        <div class="field-group" [class.has-error]="isInvalid('username')">
+          <label class="field-label" for="username">Username</label>
+          <input
+            id="username"
+            class="field-input"
+            type="text"
+            placeholder="4–12 chars, letters/numbers/_"
+            formControlName="username"
+          />
+          <div class="error-msg" *ngIf="isInvalid('username')">
+            <span *ngIf="hasError('username','required')">Username is required.</span>
+            <span *ngIf="hasError('username','pattern')">4–12 chars (letters, numbers, _).</span>
+          </div>
+        </div>
+
+        <!-- ── Email ── -->
+        <div class="field-group" [class.has-error]="isInvalid('email')">
+          <label class="field-label" for="email">Email Address</label>
+          <input
+            id="email"
+            class="field-input"
+            type="email"
+            placeholder="Enter a valid email"
+            formControlName="email"
+          />
+          <div class="error-msg" *ngIf="isInvalid('email')">
+            <span *ngIf="hasError('email','required')">Email is required.</span>
+            <span *ngIf="hasError('email','email')">Enter a valid email address.</span>
+          </div>
+        </div>
+
+        <!-- ── Password ── -->
+        <div class="field-group" [class.has-error]="isInvalid('password')">
+          <label class="field-label" for="password">Password</label>
+          <input
+            id="password"
+            class="field-input"
+            type="password"
+            placeholder="8+ chars, upper, lower, number"
+            formControlName="password"
+          />
+          <div class="error-msg" *ngIf="isInvalid('password')">
+            <span *ngIf="hasError('password','required')">Password is required.</span>
+            <span *ngIf="hasError('password','pattern')">Min 8 chars with upper, lower &amp; number.</span>
+          </div>
+        </div>
+
+        <!-- ── Role ── -->
+        <div class="field-group" [class.has-error]="isInvalid('role')">
+          <label class="field-label" for="role">Role</label>
+          <select id="role" class="field-input field-select" formControlName="role">
+            <option value="" disabled>Select role…</option>
+            <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+          </select>
+          <div class="error-msg" *ngIf="isInvalid('role')">
+            <span>Please select a role.</span>
+          </div>
+        </div>
+
+        <!-- ── ADDITIONAL FIELD 1 — Gender (Radio) ── -->
+        <div class="field-group" [class.has-error]="isInvalid('gender')">
+          <label class="field-label">Gender</label>
+          <div class="radio-group">
+            <label class="radio-option" *ngFor="let g of ['Male','Female','Prefer not to say']">
+              <input type="radio" [value]="g" formControlName="gender" />
+              <span class="radio-box"></span>
+              {{ g }}
+            </label>
+          </div>
+          <div class="error-msg" *ngIf="isInvalid('gender')">
+            <span>Please select a gender.</span>
+          </div>
+        </div>
+
+        <!-- ── ADDITIONAL FIELD 2 — Status (Radio) ── -->
+        <div class="field-group" [class.has-error]="isInvalid('status')">
+          <label class="field-label">Employment Status</label>
+          <div class="radio-group">
+            <label class="radio-option" *ngFor="let s of ['Permanent','Probationary']">
+              <input type="radio" [value]="s" formControlName="status" />
+              <span class="radio-box"></span>
+              {{ s }}
+            </label>
+          </div>
+          <div class="error-msg" *ngIf="isInvalid('status')">
+            <span>Please select an employment status.</span>
+          </div>
+        </div>
+
+        <!-- ── ADDITIONAL FIELD 3 — Comments (Textarea) ── -->
+        <div class="field-group">
+          <label class="field-label" for="comments">
+            Comments / Notes <span class="optional-tag">Optional</span>
+          </label>
+          <textarea
+            id="comments"
+            class="field-input field-textarea"
+            placeholder="Add any remarks or additional information…"
+            rows="4"
+            formControlName="comments"
+          ></textarea>
+        </div>
+
+        <!-- Submit -->
+        <button class="btn-submit" type="submit" [disabled]="form.invalid">
+          Submit Registration
+        </button>
+
+      </form>
+    </div><!-- /form-card -->
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Angular Forms Lab &mdash; Reactive Form Demo &copy; 2025</p>
+  </footer>
+
+</div>

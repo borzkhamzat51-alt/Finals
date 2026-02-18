@@ -1,0 +1,245 @@
+<!-- template-demo.component.html -->
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-block">
+        <div class="logo-icon">&#9670;</div>
+        <span class="logo-text">Angular <strong>Forms</strong></span>
+      </div>
+      <nav class="header-nav">
+        <a routerLink="/template-demo" class="nav-link active">Template-Driven</a>
+        <a routerLink="/reactive-demo" class="nav-link">Reactive</a>
+        <a routerLink="/custom-form"   class="nav-link">Custom Form</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-label">Angular Template-Driven Form</div>
+    <h1 class="hero-title">User Registration</h1>
+    <p class="hero-sub">Fill out the form below. All fields are required.</p>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Success Card -->
+    <div class="success-card" *ngIf="submitted">
+      <div class="success-icon">&#10003;</div>
+      <div class="success-body">
+        <h3>Submission Successful!</h3>
+        <p>Welcome, <strong>{{ username }}</strong>! Your registration has been received.</p>
+        <div class="summary-grid">
+          <div class="summary-item"><span class="s-label">Email</span><span class="s-val">{{ email }}</span></div>
+          <div class="summary-item"><span class="s-label">Role</span><span class="s-val">{{ role }}</span></div>
+          <div class="summary-item"><span class="s-label">Gender</span><span class="s-val">{{ gender }}</span></div>
+          <div class="summary-item"><span class="s-label">Status</span><span class="s-val">{{ status }}</span></div>
+          <div class="summary-item full"><span class="s-label">Comments</span><span class="s-val">{{ comments || '—' }}</span></div>
+        </div>
+        <button class="btn-reset" (click)="resetForm()">Register Another</button>
+      </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card" *ngIf="!submitted">
+      <form #myForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- ── Username ── -->
+        <div class="field-group" [class.has-error]="usernameField.invalid && usernameField.touched">
+          <label class="field-label" for="username">Username</label>
+          <input
+            id="username"
+            class="field-input"
+            type="text"
+            name="username"
+            [(ngModel)]="username"
+            #usernameField="ngModel"
+            placeholder="Enter username"
+            required
+            minlength="3"
+          />
+          <div class="error-msg" *ngIf="usernameField.invalid && usernameField.touched">
+            <span *ngIf="usernameField.errors?.['required']">Username is required.</span>
+            <span *ngIf="usernameField.errors?.['minlength']">Minimum 3 characters.</span>
+          </div>
+        </div>
+
+        <!-- ── Email ── -->
+        <div class="field-group" [class.has-error]="emailField.invalid && emailField.touched">
+          <label class="field-label" for="email">Email Address</label>
+          <input
+            id="email"
+            class="field-input"
+            type="email"
+            name="email"
+            [(ngModel)]="email"
+            #emailField="ngModel"
+            placeholder="Enter email"
+            required
+            email
+          />
+          <div class="error-msg" *ngIf="emailField.invalid && emailField.touched">
+            <span *ngIf="emailField.errors?.['required']">Email is required.</span>
+            <span *ngIf="emailField.errors?.['email']">Please enter a valid email.</span>
+          </div>
+        </div>
+
+        <!-- ── Password ── -->
+        <div class="field-group" [class.has-error]="passwordField.invalid && passwordField.touched">
+          <label class="field-label" for="password">Password</label>
+          <input
+            id="password"
+            class="field-input"
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            #passwordField="ngModel"
+            placeholder="Enter password"
+            required
+            minlength="6"
+          />
+          <div class="error-msg" *ngIf="passwordField.invalid && passwordField.touched">
+            <span *ngIf="passwordField.errors?.['required']">Password is required.</span>
+            <span *ngIf="passwordField.errors?.['minlength']">Minimum 6 characters.</span>
+          </div>
+        </div>
+
+        <!-- ── Role ── -->
+        <div class="field-group" [class.has-error]="roleField.invalid && roleField.touched">
+          <label class="field-label" for="role">Role</label>
+          <select
+            id="role"
+            class="field-input field-select"
+            name="role"
+            [(ngModel)]="role"
+            #roleField="ngModel"
+            required
+          >
+            <option value="" disabled selected>Select role…</option>
+            <option value="Admin">Admin</option>
+            <option value="User">User</option>
+            <option value="Guest">Guest</option>
+          </select>
+          <div class="error-msg" *ngIf="roleField.invalid && roleField.touched">
+            <span>Please select a role.</span>
+          </div>
+        </div>
+
+        <!-- ────────────────────────────────────────── -->
+        <!-- ADDITIONAL FIELD 1 — Gender (Radio) -->
+        <!-- ────────────────────────────────────────── -->
+        <div class="field-group" [class.has-error]="genderField.invalid && genderField.touched">
+          <label class="field-label">Gender</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="gender"
+                value="Male"
+                [(ngModel)]="gender"
+                #genderField="ngModel"
+                required
+              />
+              <span class="radio-box"></span>
+              Male
+            </label>
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="gender"
+                value="Female"
+                [(ngModel)]="gender"
+                required
+              />
+              <span class="radio-box"></span>
+              Female
+            </label>
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="gender"
+                value="Prefer not to say"
+                [(ngModel)]="gender"
+                required
+              />
+              <span class="radio-box"></span>
+              Prefer not to say
+            </label>
+          </div>
+          <div class="error-msg" *ngIf="genderField.invalid && genderField.touched">
+            <span>Please select a gender.</span>
+          </div>
+        </div>
+
+        <!-- ────────────────────────────────────────── -->
+        <!-- ADDITIONAL FIELD 2 — Status (Radio) -->
+        <!-- ────────────────────────────────────────── -->
+        <div class="field-group" [class.has-error]="statusField.invalid && statusField.touched">
+          <label class="field-label">Employment Status</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="status"
+                value="Permanent"
+                [(ngModel)]="status"
+                #statusField="ngModel"
+                required
+              />
+              <span class="radio-box"></span>
+              Permanent
+            </label>
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="status"
+                value="Probationary"
+                [(ngModel)]="status"
+                required
+              />
+              <span class="radio-box"></span>
+              Probationary
+            </label>
+          </div>
+          <div class="error-msg" *ngIf="statusField.invalid && statusField.touched">
+            <span>Please select an employment status.</span>
+          </div>
+        </div>
+
+        <!-- ────────────────────────────────────────── -->
+        <!-- ADDITIONAL FIELD 3 — Comments (Textarea) -->
+        <!-- ────────────────────────────────────────── -->
+        <div class="field-group">
+          <label class="field-label" for="comments">Comments / Notes <span class="optional-tag">Optional</span></label>
+          <textarea
+            id="comments"
+            class="field-input field-textarea"
+            name="comments"
+            [(ngModel)]="comments"
+            placeholder="Add any remarks or additional information…"
+            rows="4"
+          ></textarea>
+        </div>
+
+        <!-- Submit -->
+        <button
+          class="btn-submit"
+          type="submit"
+          [disabled]="myForm.invalid"
+        >
+          Submit Registration
+        </button>
+
+      </form>
+    </div><!-- /form-card -->
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Angular Forms Lab &mdash; Template-Driven Demo &copy; 2025</p>
+  </footer>
+
+</div>

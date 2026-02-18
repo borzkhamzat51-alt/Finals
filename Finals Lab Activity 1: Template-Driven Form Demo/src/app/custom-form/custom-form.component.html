@@ -1,0 +1,248 @@
+<!-- custom-form.component.html -->
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-block">
+        <div class="logo-icon">&#9670;</div>
+        <span class="logo-text">Angular <strong>Forms</strong></span>
+      </div>
+      <nav class="header-nav">
+        <a routerLink="/template-demo"  class="nav-link">Template-Driven</a>
+        <a routerLink="/reactive-demo"  class="nav-link">Reactive</a>
+        <a routerLink="/custom-form"    class="nav-link active">Custom Form</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-label">Custom Reactive Form</div>
+    <h1 class="hero-title">Job Application</h1>
+    <p class="hero-sub">Apply for a position — all fields marked * are required.</p>
+  </section>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <!-- ── Success Card ── -->
+    <div class="success-card" *ngIf="submitted">
+      <div class="success-icon">&#10003;</div>
+      <div class="success-body">
+        <h3>Application Submitted!</h3>
+        <p>Thank you, <strong>{{ form.value.fullName }}</strong>. We'll be in touch at <strong>{{ form.value.email }}</strong>.</p>
+        <div class="summary-grid">
+          <div class="summary-item"><span class="s-label">Position</span><span class="s-val">{{ form.value.position }}</span></div>
+          <div class="summary-item"><span class="s-label">Department</span><span class="s-val">{{ form.value.department }}</span></div>
+          <div class="summary-item"><span class="s-label">Experience</span><span class="s-val">{{ form.value.experienceLevel }}</span></div>
+          <div class="summary-item"><span class="s-label">Employment</span><span class="s-val">{{ form.value.employmentType }}</span></div>
+          <div class="summary-item"><span class="s-label">Expected Salary</span><span class="s-val">₱{{ form.value.expectedSalary | number }}</span></div>
+          <div class="summary-item"><span class="s-label">Start Date</span><span class="s-val">{{ form.value.startDate }}</span></div>
+          <div class="summary-item full"><span class="s-label">Cover Letter</span><span class="s-val">{{ form.value.coverLetter }}</span></div>
+        </div>
+        <button class="btn-reset" (click)="resetForm()">Submit Another</button>
+      </div>
+    </div>
+
+    <!-- ── Form Card ── -->
+    <div class="form-card" *ngIf="!submitted">
+
+      <div class="reactive-badge">
+        <span class="badge-dot"></span>
+        Reactive Form &amp; Custom Validators
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- ══ SECTION: Personal Info ══ -->
+        <div class="section-title">
+          <span class="section-num">01</span> Personal Information
+        </div>
+
+        <!-- Full Name -->
+        <div class="field-group" [class.has-error]="isInvalid('fullName')">
+          <label class="field-label" for="fullName">Full Name *</label>
+          <input id="fullName" class="field-input" type="text"
+            placeholder="e.g. Juan dela Cruz"
+            formControlName="fullName" />
+          <div class="error-msg" *ngIf="isInvalid('fullName')">
+            <span *ngIf="hasError('fullName','required')">Full name is required.</span>
+            <span *ngIf="hasError('fullName','minlength')">Minimum 3 characters.</span>
+          </div>
+        </div>
+
+        <!-- Two columns: Email + Phone -->
+        <div class="two-col">
+          <div class="field-group" [class.has-error]="isInvalid('email')">
+            <label class="field-label" for="email">Email Address *</label>
+            <input id="email" class="field-input" type="email"
+              placeholder="you@example.com"
+              formControlName="email" />
+            <div class="error-msg" *ngIf="isInvalid('email')">
+              <span *ngIf="hasError('email','required')">Email is required.</span>
+              <span *ngIf="hasError('email','email')">Enter a valid email.</span>
+            </div>
+          </div>
+
+          <div class="field-group" [class.has-error]="isInvalid('phone')">
+            <label class="field-label" for="phone">Phone Number *</label>
+            <input id="phone" class="field-input" type="tel"
+              placeholder="10–15 digit number"
+              formControlName="phone" />
+            <div class="error-msg" *ngIf="isInvalid('phone')">
+              <span *ngIf="hasError('phone','required')">Phone is required.</span>
+              <span *ngIf="hasError('phone','pattern')">10–15 digits only.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ SECTION: Position Details ══ -->
+        <div class="section-title">
+          <span class="section-num">02</span> Position Details
+        </div>
+
+        <!-- Two columns: Department + Position -->
+        <div class="two-col">
+          <div class="field-group" [class.has-error]="isInvalid('department')">
+            <label class="field-label" for="department">Department *</label>
+            <select id="department" class="field-input field-select" formControlName="department">
+              <option value="" disabled>Select department…</option>
+              <option *ngFor="let d of departments" [value]="d">{{ d }}</option>
+            </select>
+            <div class="error-msg" *ngIf="isInvalid('department')">
+              <span>Please select a department.</span>
+            </div>
+          </div>
+
+          <div class="field-group" [class.has-error]="isInvalid('position')">
+            <label class="field-label" for="position">Position Applied For *</label>
+            <input id="position" class="field-input" type="text"
+              placeholder="e.g. Frontend Developer"
+              formControlName="position" />
+            <div class="error-msg" *ngIf="isInvalid('position')">
+              <span *ngIf="hasError('position','required')">Position is required.</span>
+              <span *ngIf="hasError('position','minlength')">Minimum 3 characters.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Experience Level (Radio) -->
+        <div class="field-group" [class.has-error]="isInvalid('experienceLevel')">
+          <label class="field-label">Experience Level *</label>
+          <div class="radio-group wrap">
+            <label class="radio-option" *ngFor="let e of experienceLevels">
+              <input type="radio" [value]="e" formControlName="experienceLevel" />
+              <span class="radio-box"></span>
+              {{ e }}
+            </label>
+          </div>
+          <div class="error-msg" *ngIf="isInvalid('experienceLevel')">
+            <span>Please select your experience level.</span>
+          </div>
+        </div>
+
+        <!-- Employment Type (Radio) -->
+        <div class="field-group" [class.has-error]="isInvalid('employmentType')">
+          <label class="field-label">Employment Type *</label>
+          <div class="radio-group">
+            <label class="radio-option" *ngFor="let t of employmentTypes">
+              <input type="radio" [value]="t" formControlName="employmentType" />
+              <span class="radio-box"></span>
+              {{ t }}
+            </label>
+          </div>
+          <div class="error-msg" *ngIf="isInvalid('employmentType')">
+            <span>Please select an employment type.</span>
+          </div>
+        </div>
+
+        <!-- ══ SECTION: Compensation & Availability ══ -->
+        <div class="section-title">
+          <span class="section-num">03</span> Compensation &amp; Availability
+        </div>
+
+        <div class="two-col">
+          <!-- Expected Salary -->
+          <div class="field-group" [class.has-error]="isInvalid('expectedSalary')">
+            <label class="field-label" for="expectedSalary">Expected Monthly Salary (₱) *</label>
+            <input id="expectedSalary" class="field-input" type="number"
+              placeholder="e.g. 35000"
+              formControlName="expectedSalary" />
+            <div class="error-msg" *ngIf="isInvalid('expectedSalary')">
+              <span *ngIf="hasError('expectedSalary','required')">Salary is required.</span>
+              <span *ngIf="hasError('expectedSalary','pattern') || hasError('expectedSalary','min')">Enter a valid amount.</span>
+            </div>
+          </div>
+
+          <!-- Start Date -->
+          <div class="field-group" [class.has-error]="isInvalid('startDate')">
+            <label class="field-label" for="startDate">Available Start Date *</label>
+            <input id="startDate" class="field-input" type="date"
+              formControlName="startDate" />
+            <div class="error-msg" *ngIf="isInvalid('startDate')">
+              <span>Please provide a start date.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Portfolio -->
+        <div class="field-group" [class.has-error]="isInvalid('portfolio')">
+          <label class="field-label" for="portfolio">
+            Portfolio / LinkedIn URL <span class="optional-tag">Optional</span>
+          </label>
+          <input id="portfolio" class="field-input" type="url"
+            placeholder="https://yourportfolio.com"
+            formControlName="portfolio" />
+          <div class="error-msg" *ngIf="isInvalid('portfolio')">
+            <span>URL must start with http:// or https://</span>
+          </div>
+        </div>
+
+        <!-- ══ SECTION: Cover Letter ══ -->
+        <div class="section-title">
+          <span class="section-num">04</span> Cover Letter
+        </div>
+
+        <div class="field-group" [class.has-error]="isInvalid('coverLetter')">
+          <label class="field-label" for="coverLetter">Cover Letter *</label>
+          <textarea id="coverLetter" class="field-input field-textarea"
+            placeholder="Tell us why you're the best fit for this role (min. 50 characters)…"
+            rows="6"
+            formControlName="coverLetter"></textarea>
+          <div class="char-count" [class.char-ok]="(form.get('coverLetter')?.value?.length || 0) >= 50">
+            {{ form.get('coverLetter')?.value?.length || 0 }} / 50 min characters
+          </div>
+          <div class="error-msg" *ngIf="isInvalid('coverLetter')">
+            <span *ngIf="hasError('coverLetter','required')">Cover letter is required.</span>
+            <span *ngIf="hasError('coverLetter','minlength')">Please write at least 50 characters.</span>
+          </div>
+        </div>
+
+        <!-- ══ Terms ══ -->
+        <div class="field-group checkbox-group" [class.has-error]="isInvalid('agreeTerms')">
+          <label class="checkbox-option">
+            <input type="checkbox" formControlName="agreeTerms" />
+            <span class="checkbox-box"></span>
+            I confirm that all information provided is accurate and complete. *
+          </label>
+          <div class="error-msg" *ngIf="isInvalid('agreeTerms')">
+            <span>You must agree to continue.</span>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button class="btn-submit" type="submit" [disabled]="form.invalid">
+          Submit Application
+        </button>
+
+      </form>
+    </div><!-- /form-card -->
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Angular Forms Lab &mdash; Custom Form Demo &copy; 2025</p>
+  </footer>
+
+</div>

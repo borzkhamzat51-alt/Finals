@@ -1,0 +1,5 @@
+/* styles.css — global resets */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: 'DM Sans', sans-serif; background: #f5f0e8; }
+a { text-decoration: none; }
