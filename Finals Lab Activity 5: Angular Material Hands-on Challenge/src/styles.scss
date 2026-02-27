@@ -1,0 +1,167 @@
+@use '@angular/material' as mat;
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@400;500;600&display=swap');
+
+// ── UFC CSS Variables ─────────────────────────────────────────────────────────
+:root {
+  --ufc-red:         #D20A0A;
+  --ufc-red-dark:    #9E0707;
+  --ufc-red-light:   #FF2525;
+  --ufc-red-dim:     rgba(210, 10, 10, 0.10);
+  --ufc-gold:        #C8A951;
+  --ufc-gold-dim:    rgba(200, 169, 81, 0.12);
+  --ufc-font:        'Barlow Condensed', sans-serif;
+  --ufc-body:        'Barlow', sans-serif;
+}
+
+// Dark mode (default)
+:root, .dark-mode {
+  --bg:              #0C0C0C;
+  --bg2:             #141414;
+  --surface:         #1A1A1A;
+  --surface2:        #222222;
+  --border:          #2C2C2C;
+  --border-focus:    var(--ufc-red);
+  --text:            #F0F0F0;
+  --text-muted:      #666666;
+  --text-dim:        #3A3A3A;
+  --card-shadow:     0 40px 80px rgba(0,0,0,0.85), 0 0 0 1px #1E1E1E;
+  color-scheme: dark;
+}
+
+// Light mode
+.light-mode {
+  --bg:              #F4F4F4;
+  --bg2:             #EBEBEB;
+  --surface:         #FFFFFF;
+  --surface2:        #F0F0F0;
+  --border:          #DDDDDD;
+  --border-focus:    var(--ufc-red);
+  --text:            #111111;
+  --text-muted:      #888888;
+  --text-dim:        #CCCCCC;
+  --card-shadow:     0 20px 60px rgba(0,0,0,0.12), 0 0 0 1px #E0E0E0;
+  color-scheme: light;
+}
+
+// ── Material M3 Theme ─────────────────────────────────────────────────────────
+html {
+  height: 100%;
+
+  @include mat.theme((
+    color: (
+      theme-type: dark,
+      primary: mat.$red-palette,
+    ),
+    density: 0,
+  ));
+
+  --mat-sys-primary:           #D20A0A;
+  --mat-sys-on-primary:        #FFFFFF;
+  --mat-sys-surface:           #141414;
+  --mat-sys-on-surface:        #F0F0F0;
+  --mat-sys-outline:           #2C2C2C;
+  --mat-sys-error:             #FF5252;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--ufc-body);
+  margin: 0;
+  height: 100%;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+// ── Global Material Overrides ─────────────────────────────────────────────────
+.mat-mdc-select-panel,
+.mat-mdc-autocomplete-panel {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 4px !important;
+}
+
+.mat-mdc-option {
+  font-family: var(--ufc-body) !important;
+  font-size: 0.875rem !important;
+  color: var(--text-muted) !important;
+  &:hover:not(.mat-mdc-option-disabled),
+  &.mat-mdc-option-active {
+    background: var(--ufc-red-dim) !important;
+    color: var(--ufc-red) !important;
+  }
+  &.mdc-list-item--selected { color: var(--ufc-red) !important; }
+}
+
+.mat-datepicker-content {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+}
+.mat-calendar-body-selected { background: var(--ufc-red) !important; color: #fff !important; }
+.mat-calendar-body-today:not(.mat-calendar-body-selected) { border-color: var(--ufc-red) !important; }
+.mat-calendar-body-cell-content { color: var(--text-muted); }
+
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: var(--surface);
+  --mdc-snackbar-supporting-text-color: var(--text);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--ufc-red);
+  font-family: var(--ufc-body) !important;
+}
+
+.mat-mdc-tooltip {
+  background: var(--ufc-red) !important;
+  color: #fff !important;
+  font-family: var(--ufc-font) !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.08em;
+  border-radius: 3px !important;
+}
+
+.mat-step-header {
+  .mat-step-icon { background: var(--surface2) !important; color: var(--text-muted) !important; font-family: var(--ufc-font) !important; font-weight: 700 !important; }
+  .mat-step-icon-selected, .mat-step-icon-state-edit { background: var(--ufc-red) !important; color: #fff !important; }
+  .mat-step-label { font-family: var(--ufc-font) !important; font-size: 0.72rem !important; letter-spacing: 0.12em !important; color: var(--text-muted) !important; text-transform: uppercase; }
+  .mat-step-label-selected { color: var(--ufc-red) !important; font-weight: 700 !important; }
+}
+.mat-stepper-horizontal-line { border-color: var(--border) !important; }
+
+.mat-mdc-radio-button {
+  .mdc-radio__outer-circle { border-color: var(--border) !important; }
+  &.mat-mdc-radio-checked .mdc-radio__outer-circle { border-color: var(--ufc-red) !important; }
+  &.mat-mdc-radio-checked .mdc-radio__inner-circle { border-color: var(--ufc-red) !important; }
+  .mdc-label { font-family: var(--ufc-body) !important; font-size: 0.85rem !important; color: var(--text-muted) !important; }
+  &.mat-mdc-radio-checked .mdc-label { color: var(--text) !important; }
+}
+
+.mat-mdc-checkbox {
+  .mdc-checkbox__background { border-color: var(--border) !important; }
+  &.mat-mdc-checkbox-checked .mdc-checkbox__background { background: var(--ufc-red) !important; border-color: var(--ufc-red) !important; }
+  .mdc-label { font-family: var(--ufc-body) !important; color: var(--text-muted) !important; font-size: 0.85rem !important; }
+}
+
+.mat-mdc-slide-toggle {
+  .mdc-switch__track { background: var(--border) !important; }
+  &.mat-mdc-slide-toggle-checked .mdc-switch__track { background: var(--ufc-red-dim) !important; }
+  .mdc-switch__handle { background: var(--surface2) !important; }
+  &.mat-mdc-slide-toggle-checked .mdc-switch__handle { background: var(--ufc-red) !important; }
+  .mdc-label { font-family: var(--ufc-font) !important; font-size: 0.72rem !important; letter-spacing: 0.1em !important; color: var(--text-muted) !important; text-transform: uppercase; }
+}
+
+.mat-button-toggle-group {
+  border: 1px solid var(--border) !important;
+  border-radius: 4px !important;
+  background: var(--surface) !important;
+  flex-wrap: wrap !important;
+  .mat-button-toggle {
+    background: transparent !important;
+    border-color: var(--border) !important;
+    color: var(--text-muted) !important;
+    font-family: var(--ufc-font) !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.08em !important;
+    transition: all 0.15s;
+    &.mat-button-toggle-checked { background: var(--ufc-red) !important; color: #fff !important; }
+    &:not(.mat-button-toggle-checked):hover { background: var(--ufc-red-dim) !important; color: var(--ufc-red) !important; }
+  }
+}

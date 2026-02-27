@@ -1,0 +1,431 @@
+<div class="page-wrapper" [ngClass]="themeClass">
+
+  <!-- ── TOP HEADER BAR ──────────────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="header-brand">
+      <span class="header-logo">UFC</span>
+      <div class="header-titles">
+        <span class="header-title">FIGHTER TRYOUT 2025</span>
+        <span class="header-sub">OFFICIAL REGISTRATION PORTAL</span>
+      </div>
+    </div>
+
+    <!-- Dark / Light toggle (mat-slide-toggle) -->
+    <div class="theme-toggle-wrap">
+      <mat-icon class="theme-icon" [class.active]="!darkMode">light_mode</mat-icon>
+      <mat-slide-toggle
+        [checked]="darkMode"
+        (change)="darkMode = $event.checked"
+        class="theme-toggle"
+        color="warn">
+      </mat-slide-toggle>
+      <mat-icon class="theme-icon" [class.active]="darkMode">dark_mode</mat-icon>
+    </div>
+  </header>
+
+  <!-- ── SUCCESS SCREEN ─────────────────────────────────────────────────── -->
+  <div class="success-screen" *ngIf="submitted">
+    <div class="success-glow"></div>
+    <div class="success-card">
+      <div class="success-emblem">
+        <mat-icon>emoji_events</mat-icon>
+      </div>
+      <div class="success-badge">CONFIRMED</div>
+      <h1 class="success-title">YOU'RE IN THE<br><em>OCTAGON.</em></h1>
+      <p class="success-body">
+        Welcome, <strong>{{ step1.get('fighterName')?.value }}</strong>.<br>
+        Your fighter profile has been received.<br>
+        Our team will contact you at {{ step1.get('email')?.value }}.
+      </p>
+      <div class="success-stats">
+        <div class="stat">
+          <span class="stat-label">WEIGHT CLASS</span>
+          <span class="stat-value">{{ step2.get('weightClass')?.value }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">PRIMARY STYLE</span>
+          <span class="stat-value">{{ step2.get('fightStyle')?.value }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">COUNTRY</span>
+          <span class="stat-value">{{ step2.get('country')?.value }}</span>
+        </div>
+      </div>
+      <button mat-raised-button class="btn-primary" (click)="onReset()">
+        <mat-icon>refresh</mat-icon> REGISTER ANOTHER FIGHTER
+      </button>
+    </div>
+  </div>
+
+  <!-- ── MAIN FORM CARD ─────────────────────────────────────────────────── -->
+  <div class="form-card" [class.flash]="submitFlash" *ngIf="!submitted">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+    <!-- Progress -->
+    <div class="progress-section">
+      <div class="progress-row">
+        <span class="progress-label">PROFILE COMPLETION</span>
+        <span class="progress-val">{{ formProgress }}<sup>%</sup></span>
+      </div>
+      <mat-progress-bar mode="determinate" [value]="formProgress" class="ufc-progress"></mat-progress-bar>
+    </div>
+
+    <!-- ── STEPPER (mat-stepper) ────────────────────────────────────────── -->
+    <mat-stepper linear class="ufc-stepper" #stepper>
+
+      <!-- ════ STEP 1: ACCOUNT ════════════════════════════════════════════ -->
+      <mat-step [stepControl]="step1" label="ACCOUNT">
+        <form [formGroup]="step1" class="step-form">
+
+          <div class="step-heading">
+            <span class="step-num">01</span>
+            <div>
+              <h2 class="step-title">FIGHTER IDENTITY</h2>
+              <p class="step-desc">Create your official UFC fighter account.</p>
+            </div>
+          </div>
+
+          <!-- Fighter Name -->
+          <div class="field-wrap">
+            <label class="field-label"
+              [class.focused]="focused === 'fighterName'"
+              [class.errored]="step1.get('fighterName')?.invalid && step1.get('fighterName')?.touched">
+              FIGHTER NAME / ALIAS
+              <span class="required-star">*</span>
+            </label>
+            <mat-form-field appearance="outline" class="ufc-field">
+              <input matInput formControlName="fighterName"
+                placeholder='e.g. "THE EAGLE" KHABIB'
+                (focus)="focused='fighterName'" (blur)="focused=null" />
+              <mat-icon matSuffix matTooltip="3–30 characters">person</mat-icon>
+              @if (step1.get('fighterName')?.hasError('required') && step1.get('fighterName')?.touched) {
+                <mat-error>Fighter name is required</mat-error>
+              }
+              @if (step1.get('fighterName')?.hasError('minlength')) {
+                <mat-error>Minimum 3 characters</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <!-- Email -->
+          <div class="field-wrap">
+            <label class="field-label"
+              [class.focused]="focused === 'email'"
+              [class.errored]="step1.get('email')?.invalid && step1.get('email')?.touched">
+              EMAIL ADDRESS <span class="required-star">*</span>
+            </label>
+            <mat-form-field appearance="outline" class="ufc-field">
+              <input matInput formControlName="email" type="email"
+                placeholder="fighter@ufc.com"
+                (focus)="focused='email'" (blur)="focused=null" />
+              <mat-icon matSuffix>email</mat-icon>
+              @if (step1.get('email')?.hasError('required') && step1.get('email')?.touched) {
+                <mat-error>Email is required</mat-error>
+              }
+              @if (step1.get('email')?.hasError('email')) {
+                <mat-error>Invalid email format</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <!-- Password -->
+          <div class="field-wrap">
+            <label class="field-label"
+              [class.focused]="focused === 'password'"
+              [class.errored]="step1.get('password')?.invalid && step1.get('password')?.touched">
+              PASSWORD <span class="required-star">*</span>
+            </label>
+            <mat-form-field appearance="outline" class="ufc-field">
+              <input matInput formControlName="password"
+                [type]="hidePassword ? 'password' : 'text'"
+                placeholder="Start with a letter, alphanumeric, 8+ chars"
+                (focus)="focused='password'" (blur)="focused=null" />
+              <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+                <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              @if (step1.get('password')?.hasError('required') && step1.get('password')?.touched) {
+                <mat-error>Password is required</mat-error>
+              }
+              @if (step1.get('password')?.hasError('notStartsWithLetter')) {
+                <mat-error>Must start with a letter</mat-error>
+              }
+              @if (step1.get('password')?.hasError('notAlphanumeric')) {
+                <mat-error>Only letters and numbers allowed</mat-error>
+              }
+              @if (step1.get('password')?.hasError('minlength')) {
+                <mat-error>Minimum 8 characters</mat-error>
+              }
+            </mat-form-field>
+            <div class="password-rules">
+              <span [class.rule-ok]="!step1.get('password')?.hasError('notStartsWithLetter') && step1.get('password')?.value">
+                <mat-icon>{{ (!step1.get('password')?.hasError('notStartsWithLetter') && step1.get('password')?.value) ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                Starts with a letter
+              </span>
+              <span [class.rule-ok]="!step1.get('password')?.hasError('notAlphanumeric') && step1.get('password')?.value">
+                <mat-icon>{{ (!step1.get('password')?.hasError('notAlphanumeric') && step1.get('password')?.value) ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                Letters & numbers only
+              </span>
+              <span [class.rule-ok]="(step1.get('password')?.value?.length ?? 0) >= 8">
+                <mat-icon>{{ (step1.get('password')?.value?.length ?? 0) >= 8 ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                At least 8 characters
+              </span>
+            </div>
+          </div>
+
+          <!-- Date of Birth -->
+          <div class="field-wrap">
+            <label class="field-label"
+              [class.focused]="focused === 'birthDate'"
+              [class.errored]="step1.get('birthDate')?.invalid && step1.get('birthDate')?.touched">
+              DATE OF BIRTH <span class="required-star">*</span>
+              <span class="field-hint">Must be born 2006 or earlier</span>
+            </label>
+            <mat-form-field appearance="outline" class="ufc-field">
+              <input matInput [matDatepicker]="dobPicker" formControlName="birthDate"
+                [max]="maxDob"
+                (focus)="focused='birthDate'" (blur)="focused=null" />
+              <mat-datepicker-toggle matSuffix [for]="dobPicker"></mat-datepicker-toggle>
+              <mat-datepicker #dobPicker startView="multi-year"></mat-datepicker>
+              @if (step1.get('birthDate')?.hasError('required') && step1.get('birthDate')?.touched) {
+                <mat-error>Date of birth is required</mat-error>
+              }
+              @if (step1.get('birthDate')?.hasError('tooYoung')) {
+                <mat-error>Must be born in 2006 or earlier</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="step-nav">
+            <button mat-raised-button class="btn-primary" matStepperNext
+              [disabled]="step1.invalid" type="button">
+              NEXT: FIGHTER PROFILE <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+
+        </form>
+      </mat-step>
+
+      <!-- ════ STEP 2: FIGHTER PROFILE ════════════════════════════════════ -->
+      <mat-step [stepControl]="step2" label="PROFILE">
+        <form [formGroup]="step2" class="step-form">
+
+          <div class="step-heading">
+            <span class="step-num">02</span>
+            <div>
+              <h2 class="step-title">FIGHTER PROFILE</h2>
+              <p class="step-desc">Tell us about your fighting background.</p>
+            </div>
+          </div>
+
+          <!-- Weight Class — mat-radio-group -->
+          <div class="field-wrap">
+            <label class="field-label"
+              [class.errored]="step2.get('weightClass')?.invalid && step2.get('weightClass')?.touched">
+              WEIGHT CLASS <span class="required-star">*</span>
+            </label>
+            <mat-radio-group formControlName="weightClass" class="weight-radio-group">
+              @for (wc of weightClasses; track wc) {
+                <mat-radio-button [value]="wc" class="weight-radio">{{ wc }}</mat-radio-button>
+              }
+            </mat-radio-group>
+            @if (step2.get('weightClass')?.hasError('required') && step2.get('weightClass')?.touched) {
+              <div class="inline-error">Weight class is required</div>
+            }
+          </div>
+
+          <mat-divider class="ufc-divider"></mat-divider>
+
+          <!-- Primary Fight Style — mat-button-toggle-group -->
+          <div class="field-wrap">
+            <label class="field-label"
+              [class.errored]="step2.get('fightStyle')?.invalid && step2.get('fightStyle')?.touched">
+              PRIMARY FIGHT STYLE <span class="required-star">*</span>
+            </label>
+            <mat-button-toggle-group formControlName="fightStyle" class="style-toggle" aria-label="Fight Style">
+              @for (s of fightStyles; track s) {
+                <mat-button-toggle [value]="s">{{ s }}</mat-button-toggle>
+              }
+            </mat-button-toggle-group>
+            @if (step2.get('fightStyle')?.hasError('required') && step2.get('fightStyle')?.touched) {
+              <div class="inline-error">Fight style is required</div>
+            }
+          </div>
+
+          <mat-divider class="ufc-divider"></mat-divider>
+
+          <!-- Country — mat-autocomplete -->
+          <div class="field-wrap">
+            <label class="field-label"
+              [class.focused]="focused === 'country'"
+              [class.errored]="step2.get('country')?.invalid && step2.get('country')?.touched">
+              COUNTRY / REGION <span class="required-star">*</span>
+            </label>
+            <mat-form-field appearance="outline" class="ufc-field">
+              <input matInput formControlName="country"
+                placeholder="Search country..."
+                [matAutocomplete]="countryAuto"
+                (focus)="focused='country'" (blur)="focused=null" />
+              <mat-icon matSuffix>public</mat-icon>
+              <mat-autocomplete #countryAuto="matAutocomplete">
+                @for (c of filteredCountries | async; track c) {
+                  <mat-option [value]="c">{{ c }}</mat-option>
+                }
+              </mat-autocomplete>
+              @if (step2.get('country')?.hasError('required') && step2.get('country')?.touched) {
+                <mat-error>Country is required</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <!-- Gym / Training Camp -->
+          <div class="field-wrap">
+            <label class="field-label" [class.focused]="focused === 'gymName'">
+              GYM / TRAINING CAMP
+            </label>
+            <mat-form-field appearance="outline" class="ufc-field">
+              <input matInput formControlName="gymName"
+                placeholder="e.g. American Kickboxing Academy"
+                (focus)="focused='gymName'" (blur)="focused=null" />
+              <mat-icon matSuffix>fitness_center</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <!-- Years of Experience — mat-slider -->
+          <div class="field-wrap">
+            <div class="slider-header">
+              <label class="field-label">YEARS OF EXPERIENCE</label>
+              <div class="slider-val">
+                <span class="slider-num">{{ step2.get('experience')?.value }}</span>
+                <span class="slider-denom"> yrs</span>
+              </div>
+            </div>
+            <mat-slider min="1" max="20" step="1" showTickMarks discrete class="ufc-slider">
+              <input matSliderThumb formControlName="experience" />
+            </mat-slider>
+          </div>
+
+          <div class="step-nav two-btn">
+            <button mat-stroked-button class="btn-back" matStepperPrevious type="button">
+              <mat-icon>arrow_back</mat-icon> BACK
+            </button>
+            <button mat-raised-button class="btn-primary" matStepperNext
+              [disabled]="step2.invalid" type="button">
+              NEXT: FINALIZE <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+
+        </form>
+      </mat-step>
+
+      <!-- ════ STEP 3: FINALIZE ════════════════════════════════════════════ -->
+      <mat-step [stepControl]="step3" label="FINALIZE">
+        <form [formGroup]="step3" class="step-form" (ngSubmit)="onSubmit()">
+
+          <div class="step-heading">
+            <span class="step-num">03</span>
+            <div>
+              <h2 class="step-title">FINISHING TOUCHES</h2>
+              <p class="step-desc">Select your specialties and confirm registration.</p>
+            </div>
+          </div>
+
+          <!-- Techniques / Specialties — mat-chips -->
+          <div class="field-wrap">
+            <label class="field-label">SPECIALTIES & TECHNIQUES</label>
+            <div class="technique-btns">
+              @for (t of techniqueOptions; track t) {
+                <button mat-stroked-button type="button"
+                  class="tech-btn"
+                  [class.tech-selected]="selectedTechniques.includes(t)"
+                  [disabled]="selectedTechniques.includes(t)"
+                  (click)="addTechnique(t)">
+                  {{ t }}
+                </button>
+              }
+            </div>
+            <mat-chip-set class="ufc-chip-set" *ngIf="selectedTechniques.length > 0">
+              @for (t of selectedTechniques; track t) {
+                <mat-chip class="ufc-chip" (removed)="removeTechnique(t)" highlighted>
+                  {{ t }}
+                  <button matChipRemove><mat-icon>cancel</mat-icon></button>
+                </mat-chip>
+              }
+            </mat-chip-set>
+          </div>
+
+          <!-- Fighter Bio -->
+          <div class="field-wrap">
+            <label class="field-label" [class.focused]="focused === 'bio'">
+              FIGHTER BIO
+              <span class="field-hint">Optional — tell us your story</span>
+            </label>
+            <mat-form-field appearance="outline" class="ufc-field">
+              <textarea matInput formControlName="bio" rows="3"
+                placeholder="Brief fighting background, achievements, motivation..."
+                (focus)="focused='bio'" (blur)="focused=null"></textarea>
+            </mat-form-field>
+          </div>
+
+          <!-- Summary Card -->
+          <div class="summary-card">
+            <div class="summary-title">REGISTRATION SUMMARY</div>
+            <div class="summary-grid">
+              <div class="summary-row">
+                <span class="s-label">FIGHTER</span>
+                <span class="s-val">{{ step1.get('fighterName')?.value || '—' }}</span>
+              </div>
+              <div class="summary-row">
+                <span class="s-label">EMAIL</span>
+                <span class="s-val">{{ step1.get('email')?.value || '—' }}</span>
+              </div>
+              <div class="summary-row">
+                <span class="s-label">WEIGHT CLASS</span>
+                <span class="s-val">{{ step2.get('weightClass')?.value || '—' }}</span>
+              </div>
+              <div class="summary-row">
+                <span class="s-label">STYLE</span>
+                <span class="s-val">{{ step2.get('fightStyle')?.value || '—' }}</span>
+              </div>
+              <div class="summary-row">
+                <span class="s-label">COUNTRY</span>
+                <span class="s-val">{{ step2.get('country')?.value || '—' }}</span>
+              </div>
+              <div class="summary-row">
+                <span class="s-label">EXPERIENCE</span>
+                <span class="s-val">{{ step2.get('experience')?.value }} years</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Terms — mat-checkbox -->
+          <div class="field-wrap checkbox-wrap">
+            <mat-checkbox formControlName="agreeTerms" class="ufc-checkbox" color="warn">
+              I agree to the UFC Fighter Registration Terms, including medical screening,
+              conduct rules, and anti-doping compliance requirements.
+            </mat-checkbox>
+            @if (step3.get('agreeTerms')?.hasError('required') && step3.get('agreeTerms')?.touched) {
+              <div class="inline-error">You must accept the terms to proceed</div>
+            }
+          </div>
+
+          <div class="step-nav two-btn">
+            <button mat-stroked-button class="btn-back" matStepperPrevious type="button">
+              <mat-icon>arrow_back</mat-icon> BACK
+            </button>
+            <button mat-raised-button class="btn-submit" type="submit"
+              [disabled]="step1.invalid || step2.invalid || step3.invalid">
+              <mat-icon>send</mat-icon>
+              {{ (step1.invalid || step2.invalid || step3.invalid) ? 'COMPLETE ALL STEPS' : 'SUBMIT REGISTRATION' }}
+            </button>
+          </div>
+
+        </form>
+      </mat-step>
+
+    </mat-stepper>
+  </div>
+
+</div>
