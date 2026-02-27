@@ -1,0 +1,118 @@
+@use '@angular/material' as mat;
+
+// ── Invincible Theme ──────────────────────────────────────────────────────────
+// Bebas Neue for display, Share Tech Mono for mono elements
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --inv-yellow:      #FFD600;
+  --inv-yellow-dim:  rgba(255, 214, 0, 0.10);
+  --inv-yellow-glow: rgba(255, 214, 0, 0.30);
+  --inv-black:       #0A0A0A;
+  --inv-card:        #111111;
+  --inv-surface:     #181818;
+  --inv-border:      #242424;
+  --inv-text:        #F0F0F0;
+  --inv-muted:       #555555;
+  --inv-error:       #FF4444;
+  --inv-font:        'Bebas Neue', 'Impact', sans-serif;
+  --inv-mono:        'Share Tech Mono', monospace;
+}
+
+html {
+  height: 100%;
+
+  // Material M3 dark theme — yellow primary
+  @include mat.theme((
+    color: (
+      theme-type: dark,
+      primary: mat.$yellow-palette,
+    ),
+    density: 0,
+  ));
+
+  // Override M3 surface tokens to match Invincible black
+  --mat-sys-surface:            #0A0A0A;
+  --mat-sys-surface-container:  #111111;
+  --mat-sys-on-surface:         #F0F0F0;
+  --mat-sys-primary:            #FFD600;
+  --mat-sys-on-primary:         #000000;
+  --mat-sys-outline:            #242424;
+  --mat-sys-error:              #FF4444;
+}
+
+body {
+  color-scheme: dark;
+  background-color: var(--inv-black);
+  color: var(--inv-text);
+  font-family: var(--inv-mono);
+  margin: 0;
+  height: 100%;
+}
+
+// ── Global Material Component Overrides ───────────────────────────────────────
+
+// Select / datepicker overlay panels
+.mat-mdc-select-panel,
+.mat-datepicker-content {
+  background: #1A1A1A !important;
+  border: 1px solid var(--inv-border) !important;
+  border-radius: 2px !important;
+}
+
+.mat-mdc-option {
+  font-family: var(--inv-font) !important;
+  font-size: 0.85rem !important;
+  letter-spacing: 0.1em !important;
+  color: var(--inv-muted) !important;
+
+  &:hover:not(.mat-mdc-option-disabled),
+  &.mat-mdc-option-active {
+    background: var(--inv-yellow-dim) !important;
+    color: var(--inv-yellow) !important;
+  }
+
+  &.mdc-list-item--selected {
+    color: var(--inv-yellow) !important;
+  }
+}
+
+// Datepicker calendar colors
+.mat-calendar-body-selected {
+  background: var(--inv-yellow) !important;
+  color: #000 !important;
+}
+
+.mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  border-color: var(--inv-yellow) !important;
+}
+
+.mat-calendar-body-cell-content {
+  font-family: var(--inv-mono) !important;
+  color: var(--inv-muted);
+}
+
+.mat-calendar-table-header th,
+.mat-calendar-body-label {
+  color: var(--inv-muted) !important;
+}
+
+// Snackbar
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: #1A1A1A;
+  --mdc-snackbar-supporting-text-color: var(--inv-yellow);
+  border: 1px solid var(--inv-border);
+  border-left: 3px solid var(--inv-yellow);
+  font-family: var(--inv-font) !important;
+  letter-spacing: 0.1em;
+}
+
+// Tooltip
+.mat-mdc-tooltip {
+  background: var(--inv-yellow) !important;
+  color: #000 !important;
+  font-family: var(--inv-font) !important;
+  font-size: 0.6rem !important;
+  letter-spacing: 0.15em;
+  border-radius: 2px !important;
+}

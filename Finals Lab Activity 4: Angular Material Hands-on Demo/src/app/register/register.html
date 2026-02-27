@@ -1,0 +1,257 @@
+<div class="page-wrapper">
+
+  <!-- Speed lines -->
+  <div class="speed-lines" aria-hidden="true">
+    <div class="line" *ngFor="let i of [0,1,2,3,4,5,6,7,8]" [style.transform]="'rotate(' + (i * 20) + 'deg)'"></div>
+  </div>
+
+  <!-- ── SUCCESS STATE ─────────────────────────────────────────── -->
+  <div class="success-screen" *ngIf="submitted">
+    <div class="success-burst"></div>
+    <div class="success-card">
+      <span class="success-badge">OMNISCIENT LEAGUE</span>
+      <h1 class="success-title">YOU'RE IN.</h1>
+      <p class="success-sub">
+        Welcome, <span class="highlight">{{ registrationForm.get('username')?.value }}</span>.<br>
+        <span class="sub-note">Try not to destroy the city.</span>
+      </p>
+      <button mat-stroked-button class="back-btn"
+        (click)="submitted = false; registrationForm.reset({ angularSkillLevel: 1 }); selectedSkills = []">
+        ← BACK TO EARTH
+      </button>
+    </div>
+  </div>
+
+  <!-- ── FORM ──────────────────────────────────────────────────── -->
+  <div class="card" [class.flash]="submitFlash" *ngIf="!submitted">
+
+    <!-- Corner accents -->
+    <span class="corner tl"></span>
+    <span class="corner tr"></span>
+    <span class="corner bl"></span>
+    <span class="corner br"></span>
+
+    <!-- Top bar -->
+    <div class="top-bar">
+      <span class="i-logo">I</span>
+      <div>
+        <div class="eyebrow">OMNISCIENT LEAGUE</div>
+        <div class="eyebrow-sub">HERO REGISTRATION PROTOCOL</div>
+      </div>
+      <div class="level-badge">LVL ?</div>
+    </div>
+
+    <!-- Title -->
+    <div class="title-section">
+      <h1 class="main-title">REGISTER.</h1>
+      <div class="title-bar"></div>
+      <p class="title-sub">ANGULAR MATERIAL — INVINCIBLE EDITION</p>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <span class="progress-label">POWER LEVEL</span>
+        <span class="progress-value">{{ formProgress }}<span class="pct">%</span></span>
+      </div>
+      <mat-progress-bar mode="determinate" [value]="formProgress" class="inv-progress"></mat-progress-bar>
+      <div class="progress-ticks">
+        <span *ngFor="let t of [25, 50, 75, 100]" [class.active]="formProgress >= t">{{ t }}</span>
+      </div>
+    </div>
+
+    <!-- Form body -->
+    <mat-card-content class="form-body">
+      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+
+        <!-- 01 Username -->
+        <div class="field-wrap">
+          <label class="field-label"
+            [class.focused]="focused === 'username'"
+            [class.errored]="registrationForm.get('username')?.invalid && registrationForm.get('username')?.touched">
+            <span class="field-tag">01</span> HERO ALIAS
+          </label>
+          <mat-form-field appearance="outline" class="inv-field">
+            <input matInput formControlName="username" placeholder="E.G. OMNI-MAN"
+              (focus)="focused = 'username'" (blur)="focused = null" />
+            <mat-icon matSuffix matTooltip="3–20 characters">person</mat-icon>
+            @if (registrationForm.get('username')?.hasError('required') && registrationForm.get('username')?.touched) {
+              <mat-error>⚡ REQUIRED</mat-error>
+            }
+            @if (registrationForm.get('username')?.hasError('minlength')) {
+              <mat-error>⚡ MIN 3 CHARACTERS</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- 02 Email -->
+        <div class="field-wrap">
+          <label class="field-label"
+            [class.focused]="focused === 'email'"
+            [class.errored]="registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched">
+            <span class="field-tag">02</span> COMMS CHANNEL
+          </label>
+          <mat-form-field appearance="outline" class="inv-field">
+            <input matInput formControlName="email" type="email" placeholder="YOU@GDA.GOV"
+              (focus)="focused = 'email'" (blur)="focused = null" />
+            <mat-icon matSuffix>email</mat-icon>
+            @if (registrationForm.get('email')?.hasError('required') && registrationForm.get('email')?.touched) {
+              <mat-error>⚡ REQUIRED</mat-error>
+            }
+            @if (registrationForm.get('email')?.hasError('email')) {
+              <mat-error>⚡ INVALID FORMAT</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- 03 Password -->
+        <div class="field-wrap">
+          <label class="field-label"
+            [class.focused]="focused === 'password'"
+            [class.errored]="registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched">
+            <span class="field-tag">03</span> ACCESS CODE
+          </label>
+          <mat-form-field appearance="outline" class="inv-field">
+            <input matInput formControlName="password"
+              [type]="hidePassword ? 'password' : 'text'"
+              placeholder="MIN. 8 CHARACTERS"
+              (focus)="focused = 'password'" (blur)="focused = null" />
+            <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            @if (registrationForm.get('password')?.hasError('required') && registrationForm.get('password')?.touched) {
+              <mat-error>⚡ REQUIRED</mat-error>
+            }
+            @if (registrationForm.get('password')?.hasError('minlength')) {
+              <mat-error>⚡ MINIMUM 8 CHARACTERS</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- 04 + 05 — two-column row -->
+        <div class="two-col">
+
+          <!-- 04 Gender -->
+          <div class="field-wrap">
+            <label class="field-label"
+              [class.focused]="focused === 'gender'"
+              [class.errored]="registrationForm.get('gender')?.invalid && registrationForm.get('gender')?.touched">
+              <span class="field-tag">04</span> CLASS
+            </label>
+            <mat-form-field appearance="outline" class="inv-field">
+              <mat-select formControlName="gender"
+                (focus)="focused = 'gender'" (blur)="focused = null">
+                @for (g of genderOptions; track g) {
+                  <mat-option [value]="g">{{ g | uppercase }}</mat-option>
+                }
+              </mat-select>
+              @if (registrationForm.get('gender')?.hasError('required') && registrationForm.get('gender')?.touched) {
+                <mat-error>⚡ REQUIRED</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <!-- 05 Date of Birth -->
+          <div class="field-wrap">
+            <label class="field-label"
+              [class.focused]="focused === 'birthDate'"
+              [class.errored]="registrationForm.get('birthDate')?.invalid && registrationForm.get('birthDate')?.touched">
+              <span class="field-tag">05</span> DATE OF BIRTH
+            </label>
+            <mat-form-field appearance="outline" class="inv-field">
+              <input matInput [matDatepicker]="picker" formControlName="birthDate"
+                (focus)="focused = 'birthDate'" (blur)="focused = null" />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              @if (registrationForm.get('birthDate')?.hasError('underage')) {
+                <mat-error>⚡ MUST BE 18+</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+        </div><!-- /two-col -->
+
+        <!-- 06 Address -->
+        <div class="field-wrap">
+          <label class="field-label" [class.focused]="focused === 'address'">
+            <span class="field-tag">06</span> BASE LOCATION
+          </label>
+          <mat-form-field appearance="outline" class="inv-field">
+            <input matInput formControlName="address" placeholder="EARTH COORDINATES"
+              (focus)="focused = 'address'" (blur)="focused = null" />
+            <mat-icon matSuffix>home</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <!-- ── ABILITIES ──────────────────────────────────────── -->
+        <div class="section-divider">
+          <span class="div-line"></span>
+          <span class="div-text">ABILITIES</span>
+          <span class="div-line"></span>
+        </div>
+
+        <div class="skills-section">
+          <div class="skill-buttons">
+            @for (skill of skillOptions; track skill) {
+              <button mat-stroked-button type="button"
+                class="skill-btn"
+                [class.skill-selected]="selectedSkills.includes(skill)"
+                [disabled]="selectedSkills.includes(skill)"
+                (click)="addSkill(skill)">
+                {{ skill }}
+              </button>
+            }
+          </div>
+
+          <mat-chip-set class="chip-set" *ngIf="selectedSkills.length > 0">
+            @for (skill of selectedSkills; track skill) {
+              <mat-chip class="inv-chip" (removed)="removeSkill(skill)" highlighted>
+                {{ skill }}
+                <button matChipRemove><mat-icon>cancel</mat-icon></button>
+              </mat-chip>
+            }
+          </mat-chip-set>
+        </div>
+
+        <!-- ── POWER RATING ──────────────────────────────────── -->
+        <div class="section-divider">
+          <span class="div-line"></span>
+          <span class="div-text">POWER RATING</span>
+          <span class="div-line"></span>
+        </div>
+
+        <div class="slider-section">
+          <div class="slider-header">
+            <span class="slider-label">ANGULAR COMBAT LEVEL</span>
+            <div class="slider-value">
+              <span class="slider-num">{{ registrationForm.get('angularSkillLevel')?.value }}</span>
+              <span class="slider-denom">/10</span>
+            </div>
+          </div>
+          <mat-slider min="1" max="10" step="1" showTickMarks discrete class="inv-slider">
+            <input matSliderThumb formControlName="angularSkillLevel" />
+          </mat-slider>
+          <div class="tick-row">
+            <span *ngFor="let n of [1,2,3,4,5,6,7,8,9,10]"
+              [class.tick-active]="n <= registrationForm.get('angularSkillLevel')?.value">{{ n }}</span>
+          </div>
+        </div>
+
+        <!-- ── BUTTONS ────────────────────────────────────────── -->
+        <div class="btn-row">
+          <button mat-raised-button class="submit-btn" type="submit"
+            [disabled]="registrationForm.invalid">
+            <mat-icon>send</mat-icon>
+            {{ registrationForm.invalid ? 'COMPLETE FORM' : 'ENLIST NOW' }}
+          </button>
+          <button mat-stroked-button class="reset-btn" type="button"
+            (click)="registrationForm.reset({ angularSkillLevel: 1 }); selectedSkills = []">
+            <mat-icon>refresh</mat-icon> RESET
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </div>
+
+</div>
