@@ -1,0 +1,92 @@
+<a routerLink="/battles" class="back-link">◀ BACK TO ROSTER</a>
+
+<div *ngIf="loading" class="state-center">
+  <div class="state-icon">⏳</div>
+  <p class="state-label">LOADING...</p>
+</div>
+
+<div *ngIf="!loading" class="form-wrapper">
+  <div class="form-card">
+
+    <div class="form-header">
+      <div class="header-eyebrow">■ {{ isEditMode ? 'EDIT RECORD' : 'NEW RECORD' }} ■</div>
+      <h1 class="form-title">{{ isEditMode ? 'UPDATE' : 'LOG' }} <span class="title-accent">BATTLE</span></h1>
+      <p class="form-subtitle">{{ isEditMode ? 'Update the battle record below' : 'Register a new FlipTop battle to the official records' }}</p>
+    </div>
+
+    <div class="form-body">
+      <div *ngIf="error" class="alert-error">✖ {{ error }}</div>
+
+      <form (ngSubmit)="onSubmit()" #battleForm="ngForm">
+
+        <!-- VS Row -->
+        <div class="vs-row">
+          <div class="field-group">
+            <label class="field-label">RAPPER 1 <span class="required">*</span></label>
+            <input type="text" name="rapper1" [(ngModel)]="battle.rapper1" required
+                   placeholder="e.g. TIPSY D" class="field-input" />
+          </div>
+          <div class="vs-divider">VS</div>
+          <div class="field-group">
+            <label class="field-label">RAPPER 2 <span class="required">*</span></label>
+            <input type="text" name="rapper2" [(ngModel)]="battle.rapper2" required
+                   placeholder="e.g. MBART" class="field-input" />
+          </div>
+        </div>
+
+        <!-- Event & Type -->
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">EVENT <span class="required">*</span></label>
+            <input type="text" name="event" [(ngModel)]="battle.event" required
+                   placeholder="e.g. AHON 16" class="field-input" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">BATTLE TYPE <span class="required">*</span></label>
+            <select name="battleType" [(ngModel)]="battle.battleType" required class="field-input">
+              <option value="" disabled>Select type...</option>
+              <option *ngFor="let t of battleTypes" [value]="t">{{ t }}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Venue & Date -->
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">VENUE <span class="required">*</span></label>
+            <input type="text" name="venue" [(ngModel)]="battle.venue" required
+                   placeholder="e.g. Araneta Coliseum" class="field-input" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">DATE <span class="required">*</span></label>
+            <input type="text" name="date" [(ngModel)]="battle.date" required
+                   placeholder="e.g. Dec 14, 2024" class="field-input" />
+          </div>
+        </div>
+
+        <!-- Winner -->
+        <div class="field-group">
+          <label class="field-label">WINNER <span class="optional">(optional — leave TBD if undecided)</span></label>
+          <input type="text" name="winner" [(ngModel)]="battle.winner"
+                 placeholder="e.g. TIPSY D or TBD" class="field-input" />
+        </div>
+
+        <!-- Notes -->
+        <div class="field-group">
+          <label class="field-label">NOTES <span class="optional">(optional)</span></label>
+          <textarea name="notes" [(ngModel)]="battle.notes" rows="3"
+                    placeholder="Battle notes, highlights, crowd reaction..."
+                    class="field-input field-textarea"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" [disabled]="submitting || battleForm.invalid" class="btn-submit">
+            {{ submitting ? 'SAVING...' : (isEditMode ? '✔ UPDATE RECORD' : '+ LOG BATTLE') }}
+          </button>
+          <a routerLink="/battles" class="btn-cancel">CANCEL</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

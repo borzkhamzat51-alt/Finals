@@ -1,0 +1,134 @@
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Navbar ── */
+.navbar {
+  background: #0d0d0d;
+  border-bottom: 3px solid var(--red);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.85rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+}
+
+.brand-tag {
+  background: var(--red);
+  color: #fff;
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+  padding: 0.3rem 0.55rem;
+  letter-spacing: 0.05em;
+  clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+  padding-right: 1rem;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.brand-main {
+  font-family: var(--font-head);
+  font-size: 1.8rem;
+  color: var(--text);
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.brand-accent {
+  font-family: var(--font-head);
+  font-size: 1.8rem;
+  color: var(--yellow);
+  letter-spacing: 0.08em;
+  margin-left: 0.35rem;
+  line-height: 1;
+}
+
+.brand-main, .brand-accent {
+  display: inline;
+}
+
+.brand-sub {
+  font-family: var(--font-sub);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-top: 0.15rem;
+  display: block;
+}
+
+.btn-add {
+  background: var(--red);
+  color: #fff;
+  padding: 0.55rem 1.4rem;
+  font-family: var(--font-sub);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+  transition: all 0.2s;
+}
+
+.btn-add:hover {
+  background: var(--yellow);
+  color: #000;
+}
+
+.navbar-stripe {
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--yellow) 0px,
+    var(--yellow) 20px,
+    transparent 20px,
+    transparent 28px
+  );
+  opacity: 0.5;
+}
+
+/* ── Main Content ── */
+.main-content {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+}
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  color: var(--text-dim);
+  font-family: var(--font-sub);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.footer-tag {
+  color: var(--red);
+  margin: 0 0.5rem;
+}

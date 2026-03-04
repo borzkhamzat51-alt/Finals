@@ -1,0 +1,79 @@
+<!-- Page Header -->
+<div class="page-header">
+  <div class="header-left">
+    <div class="header-eyebrow">■ OFFICIAL RECORDS ■</div>
+    <h1 class="page-title">BATTLE <span class="title-accent">ROSTER</span></h1>
+    <p class="page-subtitle">{{ battles.length }} BATTLE{{ battles.length !== 1 ? 'S' : '' }} ON RECORD</p>
+  </div>
+  <a routerLink="/battles/new" class="btn-primary">+ LOG BATTLE</a>
+</div>
+
+<div class="section-divider"></div>
+
+<div *ngIf="successMessage" class="alert alert-success">✔ {{ successMessage }}</div>
+<div *ngIf="error" class="alert alert-error">✖ {{ error }}</div>
+
+<!-- Loading -->
+<div *ngIf="loading" class="state-center">
+  <div class="bounce-icon">🎤</div>
+  <p class="state-label">LOADING RECORDS...</p>
+</div>
+
+<!-- Empty -->
+<div *ngIf="!loading && battles.length === 0 && !error" class="state-center">
+  <div class="state-icon">🎙️</div>
+  <h2 class="state-heading">NO BATTLES LOGGED</h2>
+  <p class="state-sub">Start recording FlipTop battles</p>
+  <a routerLink="/battles/new" class="btn-primary" style="margin-top:1.5rem;">+ LOG FIRST BATTLE</a>
+</div>
+
+<!-- Battle Cards -->
+<div *ngIf="!loading && battles.length > 0" class="battles-grid">
+  <div *ngFor="let battle of battles; let i = index" class="battle-card">
+
+    <div class="card-index">#{{ i + 1 }}</div>
+
+    <!-- VS Header -->
+    <div class="vs-header">
+      <div class="rapper rapper-left">{{ battle.rapper1 }}</div>
+      <div class="vs-badge">VS</div>
+      <div class="rapper rapper-right">{{ battle.rapper2 }}</div>
+    </div>
+
+    <div class="card-body">
+
+      <!-- Event & Type -->
+      <div class="card-meta-top">
+        <span class="event-name">{{ battle.event }}</span>
+        <span [class]="'type-badge ' + getTypeClass(battle.battleType)">{{ battle.battleType }}</span>
+      </div>
+
+      <!-- Details -->
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">VENUE</span>
+          <span class="detail-value">{{ battle.venue }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">DATE</span>
+          <span class="detail-value">{{ battle.date }}</span>
+        </div>
+        <div class="detail-item detail-full">
+          <span class="detail-label">WINNER</span>
+          <span [class]="'detail-value ' + getWinnerClass(battle.winner || 'TBD')">
+            {{ battle.winner || 'TBD' }}
+          </span>
+        </div>
+      </div>
+
+      <p *ngIf="battle.notes" class="battle-notes">" {{ battle.notes }} "</p>
+
+      <!-- Actions -->
+      <div class="card-actions">
+        <a [routerLink]="['/battles/edit', battle._id]" class="btn-edit">✏ EDIT</a>
+        <button (click)="deleteBattle(battle._id!, battle.rapper1, battle.rapper2)" class="btn-delete">✖ REMOVE</button>
+      </div>
+    </div>
+
+  </div>
+</div>
